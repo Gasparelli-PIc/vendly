@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --vendly-primary: #16A34A;
+    --vendly-bg: #F9FAFB;
+    --vendly-card: #FFFFFF;
+    --vendly-text: #111827;
+    --vendly-text-secondary: #6B7280;
+    --vendly-border: #E5E7EB;
+    --vendly-error: #DC2626;
+    --vendly-warning: #F59E0B;
+  }
+}

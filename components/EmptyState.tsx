@@ -18,7 +18,7 @@ export function EmptyState({
   icon,
 }: EmptyStateProps) {
   return (
-    <View className="flex-1 items-center justify-center p-6 mt-10">
+    <View className="w-full items-center justify-center p-6 mt-10">
       {icon && <View className="mb-6 opacity-80">{icon}</View>}
       
       <Text className="text-xl font-semibold text-vendly-text text-center mb-2">

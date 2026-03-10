@@ -9,9 +9,9 @@ export default function TabsLayout() {
         tabBarActiveTintColor: "#16A34A",
         tabBarInactiveTintColor: "#6B7280",
         tabBarStyle: {
-          height: Platform.OS === 'ios' ? 88 : 80,
-          paddingBottom: Platform.OS === 'ios' ? 28 : 16,
-          paddingTop: 12,
+          height: Platform.OS === 'ios' ? 88 : 85,
+          paddingBottom: Platform.OS === 'ios' ? 28 : 15,
+          paddingTop: 10,
           backgroundColor: "#ffffff",
           borderTopColor: "#E5E7EB",
           elevation: 8,
@@ -26,43 +26,49 @@ export default function TabsLayout() {
           fontWeight: "500",
           marginTop: 4,
         },
-        headerShown: true, // Keep header visible or hide based on UI preference
+        headerShown: false, // Keep header visible or hide based on UI preference
         headerStyle: {
-          backgroundColor: "#16A34A",
+          backgroundColor: "#ffffff",
         },
-        headerTintColor: "#fff",
+        headerTintColor: "#000000",
         headerTitleStyle: {
           fontWeight: "600",
         },
       }}
     >
       <Tabs.Screen
-        name="dashboard"
+        name="dashboard/index"
         options={{
           title: "Dashboard",
           tabBarIcon: ({ color, size }) => (
-            <LayoutDashboard size={24} color={color} />
+            <LayoutDashboard size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="products"
+        name="products/index"
         options={{
           title: "Produtos",
           tabBarIcon: ({ color, size }) => (
-            <Package size={24} color={color} />
+            <Package size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="sales"
+        name="sales/index"
         options={{
           title: "Vendas",
           tabBarIcon: ({ color, size }) => (
-            <ShoppingCart size={24} color={color} />
+            <ShoppingCart size={size} color={color} />
           ),
         }}
       />
+      
+      {/* Telas Ocultas na aba inferior */}
+      <Tabs.Screen name="products/new" options={{ href: null }} />
+      <Tabs.Screen name="products/[id]" options={{ href: null }} />
+      <Tabs.Screen name="sales/new" options={{ href: null }} />
+      <Tabs.Screen name="sales/[id]" options={{ href: null }} />
     </Tabs>
   );
 }

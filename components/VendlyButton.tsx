@@ -19,13 +19,13 @@ export function VendlyButton({
   ...props
 }: VendlyButtonProps) {
   
-  const baseClasses = "h-12 flex-row items-center justify-center rounded-xl px-4 flex-1";
+  const baseClasses = "h-12 w-full flex-row items-center justify-center rounded-xl px-4";
   
   const variantClasses = {
     primary: "bg-vendly-primary",
     secondary: "bg-white border border-vendly-primary",
     danger: "bg-vendly-error",
-    ghost: "bg-transparent",
+    ghost: "bg-gray-100",
     outline: "bg-white border border-vendly-border",
   };
 

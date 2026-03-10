@@ -1,50 +1,60 @@
-# Welcome to your Expo app 👋
+# Vendly 🛍️
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**Vendly** é um aplicativo mobile moderno e intuitivo desenvolvido em **React Native / Expo** para gestão simples de vendas e produtos. Perfeito para pequenos comércios e vendedores independentes que precisam registrar rapidamente suas movimentações direto pelo celular (iOS & Android).
 
-## Get started
+## Principais Funcionalidades 🚀
 
-1. Install dependencies
+- **Dashboard Principal:**
+  - Visão panorâmica dos rendimentos (Total Bruto, Líquido, Lucro, Ticket Médio).
+  - Filtros rápidos por Hoje, Semana, Mês ou data Customizada usando calendário.
+  - Histórico rápido das últimas vendas realizadas.
+- **Gestão de Produtos:**
+  - Cadastro interativo de produtos.
+  - Definição customizada do Preço de Custo e Preço Base de Venda.
+  - Controle de visualização (Ativo/Inativo na lojinha).
+- **Caixa de Vendas Inteligente:**
+  - Carrinho inteligente que detecta produtos ativos.
+  - Adição flexível de quantidades e descontos percentuais ou fixos.
+  - Acréscimos de venda sob demanda.
+  - Resumo em tempo real do Total a pagar na finalização de pedido.
 
-   ```bash
-   npm install
-   ```
+## Tecnologias Utilizadas 🛠️
 
-2. Start the app
+- **Framework principal:** [React Native](https://reactnative.dev/) através da plataforma [Expo (SDK +50)](https://expo.dev/)
+- **Linguagem Principal:** Typescript / TSX / Javascript
+- **Roteamento:** [Expo Router](https://docs.expo.dev/router/introduction/) (Rotas baseadas em diretório global /app)
+- **Gerenciador de Estado:** [Zustand](https://github.com/pmndrs/zustand) (Simulação atual de persistência via hook dinâmico - Banco In-memory)
+- **Estilização e Componentes:** NativeWind (TailwindCSS para React Native) em conjunto de Componentes de Design System próprios (`VendlyCard`, `VendlyInput`, `VendlyButton`).
+- **Iconografia:** `lucide-react-native`
 
-   ```bash
-   npx expo start
-   ```
+## Estrutura de Pastas e Componentes Base 📂
 
-In the output, you'll find options to open the app in a
+- `/app`: Roteamento principal do app.
+  - `(tabs)`: Configuração global da Bottom Navigation e sub-telas. 
+    - `dashboard`: Visão de Entrada
+    - `products`: Catálogo, Edição, Inserção 
+    - `sales`: Resumos, Caixa de Nova Venda
+- `/components`: Botões e Cards de UI com design premium e reutilizáveis (Hero Sections, FloatingActions, StatusBadge).
+- `/lib`: Estruturas puras.
+  - `types.ts`: Tipagens principais (Product, SaleItem, Sale).
+  - `store.ts`: Motor do estado atual (Zustand) que engatilha o refresh de listas simultaneamente.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Como Executar o Projeto Localmente 👾
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+1. Certifique-se de que tenha o **Node.js** e o **npm** (ou yarn) instalados em sua máquina.
+2. Clone ou baixe este repositório para a sua máquina.
 
-## Get a fresh project
-
-When you're ready, run:
-
+No primeiro acesso, rode a instalação dos pacotes base:
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+3. Em seguida, ligue o servidor de desenvolvimento do Expo e emuladores:
+```bash
+npx expo start
+```
+*Dica para Windows*: use a opção `npx expo start -c` em caso de cachê engasgado.
 
-## Learn more
+## Dúvidas com Expo?
 
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Você pode usar o Expo Go pelo seu Celular scaneando o QR Code na aba de terminal que abriu, ou pressionar a tecla "A" para o emulador de Android ou "I" para o simulador de iOS se tiver eles rodando nativos em seu processador. Para mais informações do React Native confira a [Documentação Oficial do Expo](https://docs.expo.dev/).

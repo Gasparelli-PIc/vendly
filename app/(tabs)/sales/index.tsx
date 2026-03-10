@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { Stack, router } from 'expo-router';
 import { Calendar, Trash2 } from 'lucide-react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { VendlyCard } from '@/components/VendlyCard';
 import { EmptyState } from '@/components/EmptyState';
@@ -31,6 +32,7 @@ export default function Sales() {
   // Zustand Store
   const allSales = useStore(state => state.sales);
   const deleteSale = useStore(state => state.deleteSale);
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     let data: Sale[] = [];
@@ -94,7 +96,7 @@ export default function Sales() {
           <View style={{ maxWidth: 640, alignSelf: "center", width: "100%" }}>
             
             {/* Hero Section */}
-            <View style={{ paddingHorizontal: 16, paddingTop: 24, paddingBottom: 16 }}>
+            <View style={{ paddingHorizontal: 16, paddingTop: insets.top + 24, paddingBottom: 16 }}>
               <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 24 }}>
                 <View>
                   <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#111827', marginBottom: 4 }}>Vendas</Text>

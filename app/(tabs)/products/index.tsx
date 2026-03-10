@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { Stack, router } from 'expo-router';
 import { Package, Search, Power } from 'lucide-react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { VendlyCard } from '@/components/VendlyCard';
 import { VendlyInput } from '@/components/VendlyInput';
@@ -21,6 +22,7 @@ const formatCurrency = (val: number) => {
 export default function Products() {
   const products = useStore(state => state.products);
   const updateProduct = useStore(state => state.updateProduct);
+  const insets = useSafeAreaInsets();
 
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -41,7 +43,7 @@ export default function Products() {
           <View style={{ maxWidth: 640, alignSelf: "center", width: "100%" }}>
             
             {/* Hero Section */}
-            <View style={{ paddingHorizontal: 16, paddingTop: 24, paddingBottom: 16 }}>
+            <View style={{ paddingHorizontal: 16, paddingTop: insets.top + 24, paddingBottom: 16 }}>
               <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 24 }}>
                 <View>
                   <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#111827', marginBottom: 4 }}>Produtos</Text>

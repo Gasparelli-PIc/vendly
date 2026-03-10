@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import { Stack, router, useFocusEffect } from 'expo-router';
 import { ArrowLeft } from 'lucide-react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { VendlyButton } from '@/components/VendlyButton';
 import { VendlyInput } from '@/components/VendlyInput';
@@ -26,6 +27,7 @@ const parseCurrencyInput = (val: string) => {
 
 export default function NewProduct() {
   const addProduct = useStore(state => state.addProduct);
+  const insets = useSafeAreaInsets();
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
@@ -101,7 +103,7 @@ export default function NewProduct() {
           <View style={{ maxWidth: 640, alignSelf: "center", width: "100%" }}>
             
             {/* Hero Section */}
-            <View style={{ paddingHorizontal: 16, paddingTop: 24, paddingBottom: 16 }}>
+            <View style={{ paddingHorizontal: 16, paddingTop: insets.top + 24, paddingBottom: 16 }}>
               <TouchableOpacity
                 onPress={handleCancel}
                 style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 16 }}

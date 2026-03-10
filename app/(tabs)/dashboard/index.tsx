@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { Stack, router } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { VendlyCard } from '@/components/VendlyCard';
 import { EmptyState } from '@/components/EmptyState';
 import { DollarSign, TrendingUp, Calendar, Percent } from 'lucide-react-native';
@@ -26,6 +27,7 @@ export default function Dashboard() {
   const [customEndDate, setCustomEndDate] = useState('');
 
   const allSales = useStore((state) => state.sales);
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     let data: Sale[] = [];
@@ -82,7 +84,7 @@ export default function Dashboard() {
       <ScrollView style={{ flex: 1, backgroundColor: "#F9FAFB" }} contentContainerStyle={{ paddingBottom: 96 }}>
         <View style={{ maxWidth: 640, alignSelf: "center", width: "100%" }}>
           {/* Hero Section */}
-          <View style={{ paddingHorizontal: 16, paddingTop: 24, paddingBottom: 16 }}>
+          <View style={{ paddingHorizontal: 16, paddingTop: insets.top + 24, paddingBottom: 16 }}>
             <View style={{ marginBottom: 24 }}>
               <Text style={{ fontSize: 24, fontWeight: "bold", color: "#111827", marginBottom: 4 }}>
                 Vendly

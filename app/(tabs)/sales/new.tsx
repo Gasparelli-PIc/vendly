@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { Stack, router, useFocusEffect } from 'expo-router';
 import { ArrowLeft, Plus, Trash2, Percent, DollarSign, ShoppingCart, ChevronDown } from 'lucide-react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { VendlyButton } from '@/components/VendlyButton';
 import { VendlyInput } from '@/components/VendlyInput';
@@ -36,6 +37,7 @@ export default function NewSale() {
   const allProducts = useStore(state => state.products);
   const storeProducts = allProducts.filter(p => p.status === 'active');
   const addSale = useStore(state => state.addSale);
+  const insets = useSafeAreaInsets();
 
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
@@ -176,7 +178,7 @@ export default function NewSale() {
           <View style={{ maxWidth: 640, alignSelf: "center", width: "100%" }}>
             
             {/* Hero Section */}
-            <View style={{ paddingHorizontal: 16, paddingTop: 24, paddingBottom: 16 }}>
+            <View style={{ paddingHorizontal: 16, paddingTop: insets.top + 24, paddingBottom: 16 }}>
               <TouchableOpacity
                 onPress={handleCancel}
                 style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 16 }}

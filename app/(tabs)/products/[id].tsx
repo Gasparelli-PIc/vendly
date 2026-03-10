@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, KeyboardAvoidingView, Platform, Alert, ActivityIndicator } from 'react-native';
 import { Stack, router, useLocalSearchParams } from 'expo-router';
 import { ArrowLeft, Trash2 } from 'lucide-react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { VendlyButton } from '@/components/VendlyButton';
 import { VendlyInput } from '@/components/VendlyInput';
@@ -28,6 +29,7 @@ export default function EditProduct() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const updateProduct = useStore(state => state.updateProduct);
   const deleteProduct = useStore(state => state.deleteProduct);
+  const insets = useSafeAreaInsets();
 
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
@@ -139,7 +141,7 @@ export default function EditProduct() {
           <View style={{ maxWidth: 640, alignSelf: "center", width: "100%" }}>
             
             {/* Hero Section */}
-            <View style={{ paddingHorizontal: 16, paddingTop: 24, paddingBottom: 16 }}>
+            <View style={{ paddingHorizontal: 16, paddingTop: insets.top + 24, paddingBottom: 16 }}>
               <TouchableOpacity
                 onPress={() => router.push('/products')}
                 style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 16 }}

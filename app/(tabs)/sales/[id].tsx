@@ -6,36 +6,30 @@ import { ArrowLeft, Trash2, ShoppingCart } from 'lucide-react-native';
 import { VendlyButton } from '@/components/VendlyButton';
 import { VendlyCard } from '@/components/VendlyCard';
 import { Sale } from '@/lib/types';
+import { useStore } from '@/lib/store';
 
-// Mocks
-const getSaleById = (id: string): Sale | null => null;
-const deleteSale = (id: string) => {};
-const formatCurrency = (val: number) => `R$ ${val.toFixed(2).replace('.', ',')}`;
+const formatCurrency = (val: number) => {
+  const parts = val.toFixed(2).split('.');
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return `R$ ${parts.join(',')}`;
+};
 const formatDate = (date: string) => new Date(date).toLocaleDateString('pt-BR');
 
 export default function SaleDetails() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const deleteSale = useStore(state => state.deleteSale);
+
   const [sale, setSale] = useState<Sale | null>(null);
   const [loadingData, setLoadingData] = useState(true);
 
   useEffect(() => {
     if (id) {
-      const data = getSaleById(id);
+      const data = useStore.getState().sales.find(s => s.id === id);
       if (data) {
         setSale(data);
       } else {
-        // Mock data
-        setSale({
-          id: id,
-          items: [
-            { productId: '1', productName: 'Produto Mockado', costPrice: 10, unitPrice: 20, quantity: 2, subtotal: 40 }
-          ],
-          subtotal: 40,
-          totalValue: 40,
-          date: new Date().toISOString().split('T')[0],
-          createdAt: '',
-          updatedAt: ''
-        });
+         Alert.alert("Erro", "Venda não encontrada");
+         router.push('/sales');
       }
       setLoadingData(false);
     }
@@ -54,7 +48,7 @@ export default function SaleDetails() {
           style: "destructive",
           onPress: () => {
              deleteSale(id);
-             router.back();
+             router.push('/sales');
           }
         }
       ]
@@ -79,7 +73,7 @@ export default function SaleDetails() {
             {/* Hero Section */}
             <View style={{ paddingHorizontal: 16, paddingTop: 24, paddingBottom: 16 }}>
               <TouchableOpacity
-                onPress={() => router.back()}
+                onPress={() => router.push('/sales')}
                 style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 16 }}
               >
                 <ArrowLeft size={20} color="#6B7280" />
@@ -162,7 +156,7 @@ export default function SaleDetails() {
                 </VendlyButton>
                 <VendlyButton
                   variant="ghost"
-                  onPress={() => router.back()}
+                  onPress={() => router.push('/sales')}
                 >
                   Voltar
                 </VendlyButton>

@@ -9,13 +9,13 @@ import { FloatingActionButton } from '@/components/FloatingActionButton';
 import { VendlyDatePicker } from '@/components/VendlyDatePicker';
 import { Sale } from '@/lib/types';
 
-// Mocks temporários para o funcionamento sem o backend final
-const getTodaySales = (): Sale[] => [];
-const getWeekSales = (): Sale[] => [];
-const getMonthSales = (): Sale[] => [];
-const getSalesByDateRange = (s: string, e: string): Sale[] => [];
-const deleteSale = (id: string) => {};
-const formatCurrency = (val: number) => `R$ ${val.toFixed(2).replace('.', ',')}`;
+import { useStore } from '@/lib/store';
+
+const formatCurrency = (val: number) => {
+  const parts = val.toFixed(2).split('.');
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return `R$ ${parts.join(',')}`;
+};
 const formatDate = (date: string) => new Date(date).toLocaleDateString('pt-BR');
 
 
@@ -28,26 +28,39 @@ export default function Sales() {
   const [customStartDate, setCustomStartDate] = useState('');
   const [customEndDate, setCustomEndDate] = useState('');
 
+  // Zustand Store
+  const allSales = useStore(state => state.sales);
+  const deleteSale = useStore(state => state.deleteSale);
+
   useEffect(() => {
     let data: Sale[] = [];
+    const todayStr = new Date().toISOString().split('T')[0];
     
     switch (filter) {
       case 'today':
-        data = getTodaySales();
+        data = allSales.filter(s => s.date === todayStr);
         break;
       case 'week':
-        data = getWeekSales();
+        const weekAgo = new Date();
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        data = allSales.filter(s => new Date(s.date) >= weekAgo);
         break;
       case 'month':
-        data = getMonthSales();
+        const monthAgo = new Date();
+        monthAgo.setMonth(monthAgo.getMonth() - 1);
+        data = allSales.filter(s => new Date(s.date) >= monthAgo);
         break;
       case 'custom':
-        data = getSalesByDateRange(customStartDate, customEndDate);
+        if (customStartDate && customEndDate) {
+            data = allSales.filter(s => s.date >= customStartDate && s.date <= customEndDate);
+        } else {
+            data = allSales;
+        }
         break;
     }
     
     setSales(data);
-  }, [filter, customStartDate, customEndDate]);
+  }, [filter, customStartDate, customEndDate, allSales]);
 
   const handleDelete = (id: string) => {
     Alert.alert(
@@ -59,8 +72,7 @@ export default function Sales() {
           text: "Excluir", 
           style: "destructive",
           onPress: () => {
-            deleteSale(id);
-            // setFilter(filter) para forçar reload das vendas caso já implementem hook customizado depois
+             deleteSale(id);
           }
         }
       ]

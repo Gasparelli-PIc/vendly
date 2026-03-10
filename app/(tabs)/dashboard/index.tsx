@@ -7,16 +7,13 @@ import { DollarSign, TrendingUp, Calendar, Percent } from 'lucide-react-native';
 import { Sale } from '@/lib/types';
 import { VendlyDatePicker } from '@/components/VendlyDatePicker';
 
-// Se essas funções já existirem no seu lib/storage.ts ou lib/utils.ts, descomente e use-as.
-// import { getTodaySales, getWeekSales, getMonthSales, getSalesByDateRange } from '@/lib/storage';
-// import { formatCurrency, getTodayFormatted } from '@/lib/utils';
+import { useStore } from '@/lib/store';
 
-// Mocks temporários para a tela funcionar e não quebrar. Substitua pelas importações reais.
-const getTodaySales = (): Sale[] => [];
-const getWeekSales = (): Sale[] => [];
-const getMonthSales = (): Sale[] => [];
-const getSalesByDateRange = (s: string, e: string): Sale[] => [];
-const formatCurrency = (val: number) => `R$ ${val.toFixed(2).replace('.', ',')}`;
+const formatCurrency = (val: number) => {
+  const parts = val.toFixed(2).split('.');
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return `R$ ${parts.join(',')}`;
+};
 const getTodayFormatted = () => new Date().toLocaleDateString('pt-BR');
 
 
@@ -28,26 +25,39 @@ export default function Dashboard() {
   const [customStartDate, setCustomStartDate] = useState('');
   const [customEndDate, setCustomEndDate] = useState('');
 
+  const allSales = useStore((state) => state.sales);
+
   useEffect(() => {
     let data: Sale[] = [];
+    const todayStr = new Date().toISOString().split('T')[0];
     
     switch (filter) {
       case 'today':
-        data = getTodaySales();
+        data = allSales.filter(s => s.date === todayStr);
         break;
       case 'week':
-        data = getWeekSales();
+        // Simplified week logic
+        const weekAgo = new Date();
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        data = allSales.filter(s => new Date(s.date) >= weekAgo);
         break;
       case 'month':
-        data = getMonthSales();
+        // Simplified month logic
+        const monthAgo = new Date();
+        monthAgo.setMonth(monthAgo.getMonth() - 1);
+        data = allSales.filter(s => new Date(s.date) >= monthAgo);
         break;
       case 'custom':
-        data = getSalesByDateRange(customStartDate, customEndDate);
+        if (customStartDate && customEndDate) {
+            data = allSales.filter(s => s.date >= customStartDate && s.date <= customEndDate);
+        } else {
+            data = allSales;
+        }
         break;
     }
     
     setSales(data);
-  }, [filter, customStartDate, customEndDate]);
+  }, [filter, customStartDate, customEndDate, allSales]);
 
   const totalBruto = sales.reduce((sum, sale) => sum + sale.subtotal, 0);
   const totalDescontos = sales.reduce((sum, sale) => sum + (sale.discountAmount || 0), 0);

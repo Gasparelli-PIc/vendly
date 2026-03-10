@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { Stack, router, useFocusEffect } from 'expo-router';
-import { ArrowLeft, Plus, Trash2, Percent, DollarSign, ShoppingCart } from 'lucide-react-native';
+import { ArrowLeft, Plus, Trash2, Percent, DollarSign, ShoppingCart, ChevronDown } from 'lucide-react-native';
 
 import { VendlyButton } from '@/components/VendlyButton';
 import { VendlyInput } from '@/components/VendlyInput';
@@ -9,12 +9,7 @@ import { VendlyCard } from '@/components/VendlyCard';
 import { VendlyDatePicker } from '@/components/VendlyDatePicker';
 import { Product, SaleItem } from '@/lib/types';
 
-// Mocks
-const getProducts = (): Product[] => [
-  { id: '1', name: 'Camiseta Básica', costPrice: 20, basePrice: 40, status: 'active', createdAt: '', updatedAt: '' },
-  { id: '2', name: 'Calça Jeans', costPrice: 50, basePrice: 120, status: 'active', createdAt: '', updatedAt: '' }
-];
-const saveSale = (data: any) => {};
+import { useStore } from '@/lib/store';
 
 const formatCurrency = (val: number) => {
   const parts = val.toFixed(2).split('.');
@@ -38,6 +33,10 @@ const parseCurrencyInput = (val: string) => {
 };
 
 export default function NewSale() {
+  const allProducts = useStore(state => state.products);
+  const storeProducts = allProducts.filter(p => p.status === 'active');
+  const addSale = useStore(state => state.addSale);
+
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [cartItems, setCartItems] = useState<SaleItem[]>([]);
@@ -47,6 +46,7 @@ export default function NewSale() {
   const [currentProductId, setCurrentProductId] = useState('');
   const [currentQuantity, setCurrentQuantity] = useState('1');
   const [currentPrice, setCurrentPrice] = useState('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   // Adjustments
   const [adjustmentMode, setAdjustmentMode] = useState<'none' | 'discount' | 'additional'>('none');
@@ -71,17 +71,12 @@ export default function NewSale() {
   );
 
   const handleCancel = () => {
-    if (router.canGoBack()) {
-      router.back();
-    } else {
-      router.push('/sales');
-    }
+    router.push('/sales');
   };
 
   useEffect(() => {
-    // Fake load
-    setProducts(getProducts());
-  }, []);
+    setProducts(storeProducts);
+  }, [storeProducts]);
 
   const selectedProduct = products.find(p => p.id === currentProductId);
 
@@ -152,7 +147,7 @@ export default function NewSale() {
     setLoading(true);
     
     setTimeout(() => {
-      saveSale({
+      addSale({
         items: cartItems,
         subtotal: cartSubtotal,
         discountType: adjustmentMode === 'discount' ? discountType : undefined,
@@ -206,32 +201,79 @@ export default function NewSale() {
                     <Text style={{ fontSize: 14, fontWeight: '500', color: '#111827', marginBottom: 8 }}>
                       Produto
                     </Text>
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -4 }} contentContainerStyle={{ paddingHorizontal: 4, gap: 8 }}>
-                      {products.map(p => (
-                        <TouchableOpacity
-                          key={p.id}
+                    <TouchableOpacity 
+                      activeOpacity={0.7}
+                      onPress={() => setIsDropdownOpen(!isDropdownOpen)}
+                      style={{
+                        width: '100%',
+                        height: 48,
+                        paddingHorizontal: 16,
+                        borderRadius: 12,
+                        borderWidth: 2,
+                        borderColor: isDropdownOpen ? '#16A34A' : '#E5E7EB',
+                        backgroundColor: '#FFFFFF',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between'
+                      }}
+                    >
+                      <Text style={{ color: currentProductId ? '#111827' : '#9CA3AF', fontSize: 16 }}>
+                        {currentProductId && selectedProduct 
+                          ? `${selectedProduct.name} - ${formatCurrency(selectedProduct.basePrice)}` 
+                          : 'Selecione um produto'}
+                      </Text>
+                      <View style={{ transform: [{ rotate: isDropdownOpen ? '180deg' : '0deg' }] }}>
+                        <ChevronDown size={20} color={isDropdownOpen ? '#16A34A' : '#9CA3AF'} />
+                      </View>
+                    </TouchableOpacity>
+
+                    {isDropdownOpen && (
+                      <View style={{
+                        marginTop: 4,
+                        borderWidth: 2,
+                        borderColor: '#E5E7EB',
+                        borderRadius: 12,
+                        backgroundColor: '#FFFFFF',
+                        overflow: 'hidden'
+                      }}>
+                        <TouchableOpacity 
+                          style={{ paddingHorizontal: 16, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: '#F3F4F6' }}
                           onPress={() => {
-                            setCurrentProductId(p.id);
-                            setCurrentPrice(formatCurrencyInput(p.basePrice.toFixed(2)));
-                          }}
-                          style={{
-                            paddingHorizontal: 16,
-                            paddingVertical: 12,
-                            borderRadius: 12,
-                            borderWidth: 2,
-                            borderColor: p.id === currentProductId ? '#16A34A' : '#E5E7EB',
-                            backgroundColor: p.id === currentProductId ? 'rgba(22, 163, 74, 0.05)' : '#FFFFFF'
+                            setCurrentProductId('');
+                            setCurrentPrice('');
+                            setIsDropdownOpen(false);
                           }}
                         >
-                          <Text style={{ color: p.id === currentProductId ? '#16A34A' : '#111827', fontWeight: '500' }}>
-                            {p.name}
-                          </Text>
-                          <Text style={{ fontSize: 12, color: p.id === currentProductId ? '#16A34A' : '#6B7280' }}>
-                            {formatCurrency(p.basePrice)}
-                          </Text>
+                          <Text style={{ color: '#6B7280', fontSize: 16 }}>Selecione um produto</Text>
                         </TouchableOpacity>
-                      ))}
-                    </ScrollView>
+                        
+                        {products.map((p, index) => (
+                          <TouchableOpacity
+                            key={p.id}
+                            style={{ 
+                              paddingHorizontal: 16, 
+                              paddingVertical: 14, 
+                              borderBottomWidth: index === products.length - 1 ? 0 : 1, 
+                              borderBottomColor: '#F3F4F6', 
+                              backgroundColor: p.id === currentProductId ? 'rgba(22, 163, 74, 0.05)' : '#FFFFFF' 
+                            }}
+                            onPress={() => {
+                                setCurrentProductId(p.id);
+                                setCurrentPrice(formatCurrencyInput(p.basePrice.toFixed(2)));
+                                setIsDropdownOpen(false);
+                            }}
+                          >
+                            <Text style={{ 
+                              color: p.id === currentProductId ? '#16A34A' : '#111827', 
+                              fontWeight: p.id === currentProductId ? '600' : 'normal',
+                              fontSize: 16
+                            }}>
+                              {p.name} - {formatCurrency(p.basePrice)}
+                            </Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    )}
                   </View>
 
                   <View style={{ flexDirection: 'row', gap: 12 }}>

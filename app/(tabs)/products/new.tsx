@@ -7,8 +7,7 @@ import { VendlyButton } from '@/components/VendlyButton';
 import { VendlyInput } from '@/components/VendlyInput';
 import { VendlyCard } from '@/components/VendlyCard';
 
-// Mocks
-const saveProduct = (data: any) => {};
+import { useStore } from '@/lib/store';
 
 const formatCurrencyInput = (val: string) => {
   if (!val) return '';
@@ -26,6 +25,7 @@ const parseCurrencyInput = (val: string) => {
 };
 
 export default function NewProduct() {
+  const addProduct = useStore(state => state.addProduct);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
@@ -48,11 +48,7 @@ export default function NewProduct() {
   );
 
   const handleCancel = () => {
-    if (router.canGoBack()) {
-      router.back();
-    } else {
-      router.push('/products');
-    }
+    router.push('/products');
   };
 
   const validate = () => {
@@ -82,7 +78,7 @@ export default function NewProduct() {
     setLoading(true);
     
     setTimeout(() => {
-      saveProduct({
+      addProduct({
         name: formData.name.trim(),
         costPrice: parseCurrencyInput(formData.costPrice),
         basePrice: parseCurrencyInput(formData.basePrice),

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { Stack, router } from 'expo-router';
 import { Package, Search, Power } from 'lucide-react-native';
@@ -10,24 +10,19 @@ import { EmptyState } from '@/components/EmptyState';
 import { FloatingActionButton } from '@/components/FloatingActionButton';
 import { VendlyButton } from '@/components/VendlyButton';
 import { Product } from '@/lib/types';
+import { useStore } from '@/lib/store';
 
-// Mock temporário para simular funcionamento sem o backend ainda
-const getProducts = (): Product[] => [];
-const updateProduct = (id: string, data: Partial<Product>) => {};
-const formatCurrency = (val: number) => `R$ ${val.toFixed(2).replace('.', ',')}`;
+const formatCurrency = (val: number) => {
+  const parts = val.toFixed(2).split('.');
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return `R$ ${parts.join(',')}`;
+};
 
 export default function Products() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const products = useStore(state => state.products);
+  const updateProduct = useStore(state => state.updateProduct);
+
   const [searchQuery, setSearchQuery] = useState('');
-
-  useEffect(() => {
-    loadProducts();
-  }, []);
-
-  const loadProducts = () => {
-    const data = getProducts();
-    setProducts(data);
-  };
 
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -36,7 +31,6 @@ export default function Products() {
   const handleToggleStatus = (product: Product) => {
     const newStatus = product.status === 'active' ? 'inactive' : 'active';
     updateProduct(product.id, { status: newStatus });
-    loadProducts();
   };
 
   return (

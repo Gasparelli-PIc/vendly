@@ -19,7 +19,7 @@ export function VendlyButton({
   ...props
 }: VendlyButtonProps) {
   
-  const baseClasses = "h-12 w-full flex-row items-center justify-center rounded-xl px-4";
+  const baseClasses = "h-12 flex-row items-center justify-center rounded-xl px-4";
   
   const variantClasses = {
     primary: "bg-vendly-primary",

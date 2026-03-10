@@ -7,10 +7,7 @@ import { VendlyButton } from '@/components/VendlyButton';
 import { VendlyInput } from '@/components/VendlyInput';
 import { VendlyCard } from '@/components/VendlyCard';
 
-// Mocks
-const getProductById = (id: string) => null as any;
-const updateProduct = (id: string, data: any) => {};
-const deleteProduct = (id: string) => {};
+import { useStore } from '@/lib/store';
 
 const formatCurrencyInput = (val: string) => {
   if (!val) return '';
@@ -29,6 +26,9 @@ const parseCurrencyInput = (val: string) => {
 
 export default function EditProduct() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const updateProduct = useStore(state => state.updateProduct);
+  const deleteProduct = useStore(state => state.deleteProduct);
+
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -41,7 +41,7 @@ export default function EditProduct() {
 
   useEffect(() => {
     if (id) {
-      const product = getProductById(id);
+      const product = useStore.getState().products.find(p => p.id === id);
       if (product) {
         setFormData({
           name: product.name,
@@ -51,14 +51,8 @@ export default function EditProduct() {
         });
         setLoadingData(false);
       } else {
-        // Fallback for mocked mode
-        setFormData({
-          name: 'Produto Mockado',
-          costPrice: '10,50',
-          basePrice: '20,00',
-          status: 'active',
-        });
-        setLoadingData(false);
+        Alert.alert("Erro", "Produto não encontrado.");
+        router.push('/products');
       }
     }
   }, [id]);
@@ -98,7 +92,7 @@ export default function EditProduct() {
       });
 
       setLoading(false);
-      router.back();
+      router.push('/products');
     }, 300);
   };
 
@@ -118,7 +112,7 @@ export default function EditProduct() {
             setTimeout(() => {
               deleteProduct(id);
               setLoading(false);
-              router.back();
+              router.push('/products');
             }, 300);
           }
         }
@@ -147,7 +141,7 @@ export default function EditProduct() {
             {/* Hero Section */}
             <View style={{ paddingHorizontal: 16, paddingTop: 24, paddingBottom: 16 }}>
               <TouchableOpacity
-                onPress={() => router.back()}
+                onPress={() => router.push('/products')}
                 style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 16 }}
               >
                 <ArrowLeft size={20} color="#6B7280" />
@@ -248,7 +242,7 @@ export default function EditProduct() {
                 </VendlyButton>
                 <VendlyButton
                   variant="ghost"
-                  onPress={() => router.back()}
+                  onPress={() => router.push('/products')}
                 >
                   Cancelar
                 </VendlyButton>

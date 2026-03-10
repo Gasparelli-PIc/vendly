@@ -5,6 +5,7 @@ import { Platform } from "react-native";
 export default function TabsLayout() {
   return (
     <Tabs
+      backBehavior="history"
       screenOptions={{
         tabBarActiveTintColor: "#16A34A",
         tabBarInactiveTintColor: "#6B7280",

@@ -38,13 +38,11 @@ export default function Dashboard() {
         data = allSales.filter(s => s.date === todayStr);
         break;
       case 'week':
-        // Simplified week logic
         const weekAgo = new Date();
         weekAgo.setDate(weekAgo.getDate() - 7);
         data = allSales.filter(s => new Date(s.date) >= weekAgo);
         break;
       case 'month':
-        // Simplified month logic
         const monthAgo = new Date();
         monthAgo.setMonth(monthAgo.getMonth() - 1);
         data = allSales.filter(s => new Date(s.date) >= monthAgo);

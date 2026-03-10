@@ -29,7 +29,6 @@ export default function Sales() {
   const [customStartDate, setCustomStartDate] = useState('');
   const [customEndDate, setCustomEndDate] = useState('');
 
-  // Zustand Store
   const allSales = useStore(state => state.sales);
   const deleteSale = useStore(state => state.deleteSale);
   const insets = useSafeAreaInsets();

@@ -198,7 +198,6 @@ export default function NewSale() {
                 <Text style={{ fontWeight: '600', color: '#111827', marginBottom: 16 }}>Adicionar Produto</Text>
                 
                 <View style={{ gap: 16 }}>
-                  {/* Fake Select for Product */}
                   <View>
                     <Text style={{ fontSize: 14, fontWeight: '500', color: '#111827', marginBottom: 8 }}>
                       Produto

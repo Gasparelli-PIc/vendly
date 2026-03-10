@@ -298,12 +298,10 @@ export default function Dashboard() {
                     const saleProfit = sale.totalValue - saleCost;
 
                     return (
-                      <TouchableOpacity 
+                      <VendlyCard 
                         key={sale.id}
                         onPress={() => router.push('/sales')}
-                        activeOpacity={0.7}
                       >
-                        <VendlyCard>
                           <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
                             <View style={{ flex: 1, marginRight: 16 }}>
                               <Text style={{ fontSize: 14, color: '#6B7280', marginBottom: 8 }}>
@@ -339,7 +337,6 @@ export default function Dashboard() {
                             </View>
                           </View>
                         </VendlyCard>
-                      </TouchableOpacity>
                     );
                   })}
                 </View>

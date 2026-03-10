@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import { Stack, router } from 'expo-router';
 import { Package, Search, Power } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -83,12 +83,10 @@ export default function Products() {
               ) : (
                 <View style={{ gap: 12 }}>
                   {filteredProducts.map((product) => (
-                    <TouchableOpacity 
+                    <VendlyCard
                       key={product.id}
-                      activeOpacity={0.7}
                       onPress={() => router.push(`/products/${product.id}` as any)}
                     >
-                      <VendlyCard>
                         <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
                           <View style={{ flex: 1 }}>
                             <Text style={{ fontWeight: '600', color: '#111827', marginBottom: 4 }} numberOfLines={1}>
@@ -116,8 +114,7 @@ export default function Products() {
                             </View>
                           </VendlyButton>
                         </View>
-                      </VendlyCard>
-                    </TouchableOpacity>
+                    </VendlyCard>
                   ))}
                 </View>
               )}

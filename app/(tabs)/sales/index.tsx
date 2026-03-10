@@ -178,12 +178,10 @@ export default function Sales() {
               ) : (
                 <View style={{ gap: 12 }}>
                   {sales.map((sale) => (
-                    <TouchableOpacity 
+                    <VendlyCard
                       key={sale.id}
-                      activeOpacity={0.7}
                       onPress={() => handleViewDetails(sale)}
                     >
-                      <VendlyCard>
                         <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
                           <View style={{ flex: 1 }}>
                             <Text style={{ fontSize: 12, color: '#6B7280', marginBottom: 8 }}>
@@ -237,8 +235,7 @@ export default function Sales() {
                             <Trash2 size={16} color="#DC2626" />
                           </TouchableOpacity>
                         </View>
-                      </VendlyCard>
-                    </TouchableOpacity>
+                    </VendlyCard>
                   ))}
                 </View>
               )}

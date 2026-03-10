@@ -38,7 +38,7 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen
-        name="dashboard/index"
+        name="dashboard"
         options={{
           title: "Dashboard",
           tabBarIcon: ({ color, size }) => (
@@ -47,7 +47,7 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="products/index"
+        name="products"
         options={{
           title: "Produtos",
           tabBarIcon: ({ color, size }) => (
@@ -56,7 +56,7 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="sales/index"
+        name="sales"
         options={{
           title: "Vendas",
           tabBarIcon: ({ color, size }) => (
@@ -64,12 +64,6 @@ export default function TabsLayout() {
           ),
         }}
       />
-      
-      {/* Telas Ocultas na aba inferior */}
-      <Tabs.Screen name="products/new" options={{ href: null }} />
-      <Tabs.Screen name="products/[id]" options={{ href: null }} />
-      <Tabs.Screen name="sales/new" options={{ href: null }} />
-      <Tabs.Screen name="sales/[id]" options={{ href: null }} />
     </Tabs>
   );
 }

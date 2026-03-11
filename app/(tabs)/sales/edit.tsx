@@ -1,4 +1,4 @@
-import { Stack, router, useFocusEffect } from "expo-router";
+import { Stack, router, useLocalSearchParams } from "expo-router";
 import {
   ArrowLeft,
   ChevronDown,
@@ -8,7 +8,7 @@ import {
   ShoppingCart,
   Trash2,
 } from "lucide-react-native";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -16,6 +16,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ActivityIndicator,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -48,13 +49,17 @@ const parseCurrencyInput = (val: string) => {
   return parseFloat(val.replace(/\./g, "").replace(",", "."));
 };
 
-export default function NewSale() {
+export default function EditSale() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  
   const allProducts = useStore((state) => state.products);
   const storeProducts = allProducts.filter((p) => p.status === "active");
-  const addSale = useStore((state) => state.addSale);
+  const updateSale = useStore((state) => state.updateSale);
+  const sales = useStore((state) => state.sales);
   const insets = useSafeAreaInsets();
 
   const [loading, setLoading] = useState(false);
+  const [loadingData, setLoadingData] = useState(true);
   const [products, setProducts] = useState<Product[]>([]);
   const [cartItems, setCartItems] = useState<SaleItem[]>([]);
   const [saleDate, setSaleDate] = useState(
@@ -80,28 +85,47 @@ export default function NewSale() {
   );
   const [additionalValue, setAdditionalValue] = useState("");
 
-  useFocusEffect(
-    useCallback(() => {
-      setCartItems([]);
-      setSaleDate(new Date().toISOString().split("T")[0]);
-      setCurrentProductId("");
-      setCurrentQuantity("1");
-      setCurrentPrice("");
-      setAdjustmentMode("none");
-      setDiscountType("percentage");
-      setDiscountValue("");
-      setAdditionalType("percentage");
-      setAdditionalValue("");
-    }, []),
-  );
-
   const handleCancel = () => {
     router.back();
   };
 
   useEffect(() => {
     setProducts(storeProducts);
-  }, [storeProducts]);
+    
+    if (id) {
+      const sale = sales.find(s => s.id === id);
+      if (sale) {
+        setCartItems(sale.items);
+        setSaleDate(sale.date);
+        
+        // Load discount/additional data
+        if (sale.discountAmount && sale.discountAmount > 0) {
+          setAdjustmentMode('discount');
+          setDiscountType(sale.discountType || 'percentage');
+          if (sale.discountValue) {
+             setDiscountValue(
+               sale.discountType === 'value' 
+                 ? formatCurrencyInput(sale.discountValue.toFixed(2))
+                 : sale.discountValue.toString()
+             );
+          }
+        } else if (sale.additionalAmount && sale.additionalAmount > 0) {
+          setAdjustmentMode('additional');
+          setAdditionalType(sale.additionalType || 'percentage');
+          if (sale.additionalValue) {
+             setAdditionalValue(
+               sale.additionalType === 'value' 
+                 ? formatCurrencyInput(sale.additionalValue.toFixed(2))
+                 : sale.additionalValue.toString()
+             );
+          }
+        }
+      } else {
+        router.push('/sales');
+      }
+      setLoadingData(false);
+    }
+  }, [id, sales, storeProducts]);
 
   const selectedProduct = products.find((p) => p.id === currentProductId);
 
@@ -172,25 +196,25 @@ export default function NewSale() {
   const total = cartSubtotal - discountAmount + additionalAmount;
 
   const handleSubmit = () => {
-    if (cartItems.length === 0) return;
+    if (cartItems.length === 0 || !id) return;
 
     setLoading(true);
 
     setTimeout(() => {
-      addSale({
+      updateSale(id, {
         items: cartItems,
         subtotal: cartSubtotal,
         discountType: adjustmentMode === "discount" ? discountType : undefined,
         discountValue:
           adjustmentMode === "discount" && discountValue
-            ? parseCurrencyInput(discountValue)
+            ? discountType === "value" ? parseCurrencyInput(discountValue) : parseFloat(discountValue.replace(",", "."))
             : undefined,
         discountAmount: discountAmount > 0 ? discountAmount : undefined,
         additionalType:
           adjustmentMode === "additional" ? additionalType : undefined,
         additionalValue:
           adjustmentMode === "additional" && additionalValue
-            ? parseCurrencyInput(additionalValue)
+            ? additionalType === "value" ? parseCurrencyInput(additionalValue) : parseFloat(additionalValue.replace(",", "."))
             : undefined,
         additionalAmount: additionalAmount > 0 ? additionalAmount : undefined,
         totalValue: total,
@@ -202,9 +226,17 @@ export default function NewSale() {
     }, 300);
   };
 
+  if (loadingData) {
+    return (
+      <View style={{ flex: 1, backgroundColor: '#F9FAFB', alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator size="large" color="#16A34A" />
+      </View>
+    );
+  }
+
   return (
     <>
-      <Stack.Screen options={{ title: "Nova Venda", headerShown: false }} />
+      <Stack.Screen options={{ title: "Editar Venda", headerShown: false }} />
       <KeyboardAvoidingView
         style={{ flex: 1, backgroundColor: "#F9FAFB" }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -238,7 +270,7 @@ export default function NewSale() {
               <Text
                 style={{ fontSize: 24, fontWeight: "600", color: "#111827" }}
               >
-                Nova Venda
+                Editar Venda
               </Text>
             </View>
 
@@ -736,7 +768,9 @@ export default function NewSale() {
                           justifyContent: "space-between",
                         }}
                       >
-                        <Text style={{ color: "#6B7280" }}>Desconto</Text>
+                        <Text style={{ color: "#6B7280" }}>
+                          Desconto {discountType === "percentage" ? `(${discountValue}%)` : ""}
+                        </Text>
                         <Text style={{ fontWeight: "500", color: "#DC2626" }}>
                           - {formatCurrency(discountAmount)}
                         </Text>
@@ -750,7 +784,9 @@ export default function NewSale() {
                           justifyContent: "space-between",
                         }}
                       >
-                        <Text style={{ color: "#6B7280" }}>Acréscimo</Text>
+                        <Text style={{ color: "#6B7280" }}>
+                          Acréscimo {additionalType === "percentage" ? `(${additionalValue}%)` : ""}
+                        </Text>
                         <Text style={{ fontWeight: "500", color: "#16A34A" }}>
                           + {formatCurrency(additionalAmount)}
                         </Text>
@@ -793,7 +829,7 @@ export default function NewSale() {
                   disabled={cartItems.length === 0}
                   onPress={handleSubmit}
                 >
-                  Salvar Venda
+                  Salvar Alterações
                 </VendlyButton>
                 <VendlyButton variant="ghost" onPress={handleCancel}>
                   Cancelar

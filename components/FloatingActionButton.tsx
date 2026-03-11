@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Platform } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import { Plus } from 'lucide-react-native';
 import { Link } from 'expo-router';
 
@@ -12,8 +12,16 @@ export function FloatingActionButton({ to }: FloatingActionButtonProps) {
     <Link href={to as any} asChild>
       <TouchableOpacity
         activeOpacity={0.8}
-        className="absolute bottom-6 right-6 w-14 h-14 bg-vendly-primary rounded-full items-center justify-center shadow-lg"
         style={{
+          position: 'absolute',
+          bottom: 24,
+          right: 24,
+          width: 56,
+          height: 56,
+          backgroundColor: '#16A34A',
+          borderRadius: 28,
+          alignItems: 'center',
+          justifyContent: 'center',
           shadowColor: '#16A34A',
           shadowOffset: { width: 0, height: 4 },
           shadowOpacity: 0.3,

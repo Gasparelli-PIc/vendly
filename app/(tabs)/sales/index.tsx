@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import { Stack, router } from 'expo-router';
-import { Calendar, Trash2 } from 'lucide-react-native';
+import { Stack, router, useFocusEffect } from 'expo-router';
+import { Calendar, ShoppingCart, Trash2 } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { VendlyCard } from '@/components/VendlyCard';
@@ -33,35 +33,37 @@ export default function Sales() {
   const deleteSale = useStore(state => state.deleteSale);
   const insets = useSafeAreaInsets();
 
-  useEffect(() => {
-    let data: Sale[] = [];
-    const todayStr = new Date().toISOString().split('T')[0];
-    
-    switch (filter) {
-      case 'today':
-        data = allSales.filter(s => s.date === todayStr);
-        break;
-      case 'week':
-        const weekAgo = new Date();
-        weekAgo.setDate(weekAgo.getDate() - 7);
-        data = allSales.filter(s => new Date(s.date) >= weekAgo);
-        break;
-      case 'month':
-        const monthAgo = new Date();
-        monthAgo.setMonth(monthAgo.getMonth() - 1);
-        data = allSales.filter(s => new Date(s.date) >= monthAgo);
-        break;
-      case 'custom':
-        if (customStartDate && customEndDate) {
-            data = allSales.filter(s => s.date >= customStartDate && s.date <= customEndDate);
-        } else {
-            data = allSales;
-        }
-        break;
-    }
-    
-    setSales(data);
-  }, [filter, customStartDate, customEndDate, allSales]);
+  useFocusEffect(
+    useCallback(() => {
+      let data: Sale[] = [];
+      const todayStr = new Date().toISOString().split('T')[0];
+      
+      switch (filter) {
+        case 'today':
+          data = allSales.filter(s => s.date === todayStr);
+          break;
+        case 'week':
+          const weekAgo = new Date();
+          weekAgo.setDate(weekAgo.getDate() - 7);
+          data = allSales.filter(s => new Date(s.date) >= weekAgo);
+          break;
+        case 'month':
+          const monthAgo = new Date();
+          monthAgo.setMonth(monthAgo.getMonth() - 1);
+          data = allSales.filter(s => new Date(s.date) >= monthAgo);
+          break;
+        case 'custom':
+          if (customStartDate && customEndDate) {
+              data = allSales.filter(s => s.date >= customStartDate && s.date <= customEndDate);
+          } else {
+              data = allSales;
+          }
+          break;
+      }
+      
+      setSales(data);
+    }, [filter, customStartDate, customEndDate, allSales])
+  );
 
   const handleDelete = (id: string) => {
     Alert.alert(
@@ -174,6 +176,7 @@ export default function Sales() {
                   message="Não há vendas para o período selecionado. Registre uma nova venda."
                   actionLabel="Registrar Venda"
                   onAction={() => router.push('/sales/new')}
+                  icon={<ShoppingCart size={62} color="#9CA3AF" />}
                 />
               ) : (
                 <View style={{ gap: 12 }}>

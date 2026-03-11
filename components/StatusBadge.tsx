@@ -10,14 +10,20 @@ export function StatusBadge({ status }: StatusBadgeProps) {
   
   return (
     <View
-      className={`px-2 py-1 rounded-md self-start ${
-        isActive ? 'bg-green-100' : 'bg-gray-100'
-      }`}
+      style={{
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+        borderRadius: 6,
+        alignSelf: 'flex-start',
+        backgroundColor: isActive ? '#DCFCE7' : '#F3F4F6'
+      }}
     >
       <Text
-        className={`text-xs font-medium ${
-          isActive ? 'text-vendly-primary' : 'text-gray-600'
-        }`}
+        style={{
+          fontSize: 12,
+          fontWeight: '500',
+          color: isActive ? '#16A34A' : '#4B5563'
+        }}
       >
         {isActive ? 'Ativo' : 'Inativo'}
       </Text>

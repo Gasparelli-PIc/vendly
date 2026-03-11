@@ -4,34 +4,39 @@ import { View, Text, TextInput, TextInputProps } from 'react-native';
 interface VendlyInputProps extends TextInputProps {
   label?: string;
   error?: string;
-  className?: string;
 }
 
 export function VendlyInput({
   label,
   error,
-  className = '',
+  style,
   ...props
-}: VendlyInputProps) {
+}: VendlyInputProps & { style?: any }) {
   const [isFocused, setIsFocused] = useState(false);
 
   return (
-    <View className={`w-full mb-4 ${className}`}>
+    <View style={[{ width: '100%'}, style]}>
       {label && (
-        <Text className="text-sm font-medium text-vendly-text mb-1.5">
+        <Text style={{ fontSize: 14, fontWeight: '500', color: '#111827', marginBottom: 6 }}>
           {label}
         </Text>
       )}
       
       <View
-        className={`
-          flex-row items-center h-12 px-4 rounded-xl border bg-white
-          ${isFocused ? 'border-vendly-primary bg-green-50/10' : 'border-vendly-border'}
-          ${error ? 'border-vendly-error' : ''}
-        `}
+        style={[{
+          flexDirection: 'row',
+          alignItems: 'center',
+          height: 48,
+          paddingHorizontal: 16,
+          borderRadius: 12,
+          borderWidth: 1,
+          backgroundColor: '#FFFFFF',
+          borderColor: isFocused ? '#16A34A' : '#E5E7EB',
+        }, isFocused && { backgroundColor: 'rgba(22, 163, 74, 0.05)' },
+        error && { borderColor: '#DC2626' }]}
       >
         <TextInput
-          className="flex-1 text-base text-vendly-text h-full py-0"
+          style={{ flex: 1, fontSize: 16, color: '#111827', height: '100%', paddingVertical: 0 }}
           placeholderTextColor="#9CA3AF"
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
@@ -40,7 +45,7 @@ export function VendlyInput({
       </View>
 
       {error && (
-        <Text className="text-sm text-vendly-error mt-1.5">
+        <Text style={{ fontSize: 14, color: '#DC2626', marginTop: 6 }}>
           {error}
         </Text>
       )}

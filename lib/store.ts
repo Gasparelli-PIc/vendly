@@ -12,6 +12,7 @@ interface StoreState {
   
   // Sale actions
   addSale: (sale: Omit<Sale, 'id' | 'createdAt' | 'updatedAt'>) => void;
+  updateSale: (id: string, data: Partial<Sale>) => void;
   deleteSale: (id: string) => void;
 }
 
@@ -48,6 +49,12 @@ export const useStore = create<StoreState>((set) => ({
     };
     return { sales: [newSale, ...state.sales] }; // prepend new sales
   }),
+
+  updateSale: (id, data) => set((state) => ({
+    sales: state.sales.map((s) => 
+      s.id === id ? { ...s, ...data, updatedAt: new Date().toISOString() } : s
+    )
+  })),
 
   deleteSale: (id) => set((state) => ({
     sales: state.sales.filter((s) => s.id !== id)

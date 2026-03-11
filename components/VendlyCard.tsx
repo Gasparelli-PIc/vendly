@@ -1,40 +1,42 @@
 import React from 'react';
-import { View, Pressable, ViewProps } from 'react-native';
+import { View, TouchableOpacity, ViewProps } from 'react-native';
 
 interface VendlyCardProps extends ViewProps {
   children: React.ReactNode;
-  className?: string;
   onPress?: () => void;
 }
 
-export function VendlyCard({ children, className = '', onPress, ...props }: VendlyCardProps) {
+export function VendlyCard({ children, style, onPress, ...props }: VendlyCardProps) {
   const baseStyle = {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16, // rounded-2xl
+    padding: 16, // p-4
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 5,
-    elevation: 2,
-    ...(props.style as any)
+    shadowOffset: { width: 0, height: 2 }, // shadow-sm
+    shadowOpacity: 0.05, // shadow-sm
+    shadowRadius: 5, // shadow-sm
+    elevation: 2, // shadow-sm equivalent for Android
+    borderWidth: 1, // border
+    borderColor: '#F3F4F6', // border-gray-100
+    marginBottom: 12, // mb-3
+    ...(style as any),
   };
 
   if (onPress) {
     return (
-      <Pressable
+      <TouchableOpacity
+        activeOpacity={0.7}
         onPress={onPress}
-        className={`rounded-2xl p-4 shadow-sm border border-gray-100 mb-3 ${className}`}
-        style={({ pressed }) => [
-          baseStyle,
-          { backgroundColor: pressed ? '#F3F4F6' : '#FFFFFF' }
-        ]}
+        style={baseStyle}
+        {...(props as any)}
       >
         {children}
-      </Pressable>
+      </TouchableOpacity>
     );
   }
 
   return (
     <View
-      className={`bg-white rounded-2xl p-4 shadow-sm border border-gray-100 mb-3 ${className}`}
       style={baseStyle}
       {...props}
     >

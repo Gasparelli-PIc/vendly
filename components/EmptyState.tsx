@@ -18,19 +18,19 @@ export function EmptyState({
   icon,
 }: EmptyStateProps) {
   return (
-    <View className="w-full items-center justify-center p-6 mt-10">
-      {icon && <View className="mb-6 opacity-80">{icon}</View>}
+    <View style={{ width: '100%', alignItems: 'center', justifyContent: 'center', padding: 24, marginTop: 24 }}>
+      {icon && <View style={{ marginBottom: 24, opacity: 0.8 }}>{icon}</View>}
       
-      <Text className="text-xl font-semibold text-vendly-text text-center mb-2">
+      <Text style={{ fontSize: 20, fontWeight: '600', color: '#111827', textAlign: 'center', marginBottom: 8 }}>
         {title}
       </Text>
       
-      <Text className="text-base text-vendly-text-secondary text-center mb-8 px-4">
+      <Text style={{ fontSize: 16, color: '#6B7280', textAlign: 'center', marginBottom: 32, paddingHorizontal: 16 }}>
         {message}
       </Text>
 
       {actionLabel && onAction && (
-        <VendlyButton variant="primary" onPress={onAction} className="w-full">
+        <VendlyButton variant="primary" onPress={onAction} style={{ width: '100%' }}>
           {actionLabel}
         </VendlyButton>
       )}

@@ -8,10 +8,13 @@ interface LoadingStateProps {
 
 export function LoadingState({ message = 'Carregando...', fullScreen = false }: LoadingStateProps) {
   return (
-    <View className={`${fullScreen ? 'flex-1 bg-vendly-bg' : 'my-8'} items-center justify-center`}>
+    <View style={[
+      { alignItems: 'center', justifyContent: 'center' },
+      fullScreen ? { flex: 1, backgroundColor: '#F9FAFB' } : { marginVertical: 32 }
+    ]}>
       <ActivityIndicator size="large" color="#16A34A" />
       {message && (
-        <Text className="mt-4 text-base font-medium text-vendly-text-secondary">
+        <Text style={{ marginTop: 16, fontSize: 16, fontWeight: '500', color: '#6B7280' }}>
           {message}
         </Text>
       )}
